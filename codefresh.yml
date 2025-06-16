@@ -1,0 +1,45 @@
+version: '1.0'
+stages:
+  - terraform
+ 
+steps:
+  clone_repo:
+    title: "Cloning GitHub repository"
+    type: "git-clone"
+    repo: '${{CF_REPO_OWNER}}/${{CF_REPO_NAME}}'
+    revision: '${{CF_BRANCH}}'
+    git: 'default'
+    stage: terraform
+ 
+  terraform_init:
+    title: "Terraform Init"
+    image: hashicorp/terraform:1.5.7
+    working_directory: '${{clone_repo}}'
+    environment:
+      - AWS_ACCESS_KEY_ID=${{AWS_ACCESS_KEY_ID}}
+      - AWS_SECRET_ACCESS_KEY=${{AWS_SECRET_ACCESS_KEY}}
+      - AWS_DEFAULT_REGION=us-east-1
+    commands:
+      - terraform init
+ 
+  terraform_plan:
+    title: "Terraform Plan"
+    image: hashicorp/terraform:1.5.7
+    working_directory: '${{clone_repo}}'
+    environment:
+      - AWS_ACCESS_KEY_ID=${{AWS_ACCESS_KEY_ID}}
+      - AWS_SECRET_ACCESS_KEY=${{AWS_SECRET_ACCESS_KEY}}
+      - AWS_DEFAULT_REGION=us-east-1
+    commands:
+      - terraform plan -out=tfplan
+ 
+  terraform_apply:
+    title: "Terraform Apply"
+    image: hashicorp/terraform:1.5.7
+    working_directory: '${{clone_repo}}'
+    environment:
+      - AWS_ACCESS_KEY_ID=${{AWS_ACCESS_KEY_ID}}
+      - AWS_SECRET_ACCESS_KEY=${{AWS_SECRET_ACCESS_KEY}}
+      - AWS_DEFAULT_REGION=us-east-1
+    commands:
+      - terraform apply -auto-approve tfplan
