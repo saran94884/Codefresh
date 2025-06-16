@@ -6,7 +6,7 @@ provider "aws" {
  
 resource "aws_s3_bucket" "my_bucket" {
 
-  bucket = "Devops3399"  # Bucket names must be globally unique
+  bucket = "devops3399"  # Bucket names must be globally unique
 
 
  
